@@ -25,9 +25,21 @@ public class UserDto {
             @Pattern(regexp = "^[A-Za-z0-9가-힣]+$", message = "띄어쓰기를 없애주세요")
             String nickName,
 
-            @NotBlank(message = "프로필 사진을 추가해주세요")
+            @NotNull(message = "프로필 사진을 추가해주세요")
             MultipartFile profileImage
     ) {}
+
+    public record UserResponse(
+            String nickName,
+            String profileImageUrl
+    ) {
+        public static UserResponse from(User user) {
+            return new UserResponse(
+                    user.getNickName(),
+                    user.getProfileImg().getFileUrl()
+            );
+        }
+    }
 
     public record profileImageUpdateRequest(
             MultipartFile profileImage

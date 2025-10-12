@@ -41,6 +41,11 @@ public class UserService {
     }
 
     @Transactional
+    public UserResponse getUsers(User user) {
+        return UserResponse.from(user);
+    }
+
+    @Transactional
     public void updateProfileImage(MultipartFile file, User user) {
         Image existImage = user.getProfileImg();
         imageService.updateIsDeleted(existImage);
@@ -88,6 +93,11 @@ public class UserService {
         if (!password.equals(confirmPassword)) {
             throw new IllegalArgumentException("passwords do not match");
         }
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(()-> new IllegalArgumentException("User not found"));
     }
 
 
