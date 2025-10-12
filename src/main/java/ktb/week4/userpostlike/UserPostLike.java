@@ -25,9 +25,11 @@ public class UserPostLike {
     @MapsId("postId")
     private Post post;
 
+
     @Builder
     private UserPostLike(User user, Post post) {
         this.user = user;
         this.post = post;
+        this.id = new UserPostLikeId(user.getId(), post.getId());
     }
 }
