@@ -4,6 +4,7 @@ import ktb.week4.post.Post;
 import ktb.week4.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class PostViewService {
                 .orElseThrow(()-> new IllegalArgumentException("Post view not found"));
     }
 
+    @Transactional
     public void updateCommentCount(Long postId, boolean isDeleted) {
         PostView postView = getPostViewById(postId);
         if (isDeleted) {
@@ -23,8 +25,11 @@ public class PostViewService {
         } else {
             postView.upCommentCount();
         }
+
+        postViewRepository.save(postView);
     }
 
+    @Transactional
     public void updateLikeCount(Long postId, boolean isDeleted) {
         PostView postView = getPostViewById(postId);
 
@@ -33,10 +38,14 @@ public class PostViewService {
         } else {
             postView.upLikeCount();
         }
+
+        postViewRepository.save(postView);
     }
 
+    @Transactional
     public void updateViewsCount(Long postId) {
         PostView postView = getPostViewById(postId);
         postView.updateViewCount();
+        postViewRepository.save(postView);
     }
 }
