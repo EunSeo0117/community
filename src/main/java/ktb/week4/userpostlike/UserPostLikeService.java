@@ -20,6 +20,7 @@ public class UserPostLikeService {
     @Transactional
     public void createUserPostLike(Long postId, User user) {
         Post post = postService.getPostById(postId);
+        validateOwner(user, post.getUser());
 
         UserPostLike userPostLike = UserPostLike.builder()
                 .user(user)
@@ -36,5 +37,11 @@ public class UserPostLikeService {
 
         userPostLikeRepository.deleteByUserAndPost(user, post);
         postViewService.updateLikeCount(postId, true);
+    }
+
+    private void validateOwner(User user, User postUser) {
+        if (user.getId().equals(postUser.getId())) {
+            throw new IllegalArgumentException("post owner can't like own posts");
+        }
     }
 }
