@@ -14,17 +14,11 @@ import java.util.List;
 import java.util.Map;
 
 public class PostDto {
-    public record PostCreateRequest(
+    public record PostRequest(
             @NotBlank(message = "제목은 필수입니다.")
             @Size(max = 26, message = "제목은 100자 이내로 입력해주세요.")
             String postTitle,
             @NotBlank(message = "제목, 내용을 모두 작성해주세요.")
-            String postContent,
-            List<MultipartFile> files
-    ) {}
-
-    public record PostUpdateRequest(
-            String postTitle,
             String postContent,
             List<MultipartFile> files
     ) {}

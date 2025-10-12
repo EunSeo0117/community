@@ -38,6 +38,7 @@ public class PostService {
     private final PostImageService postImageService;
     private final PostViewService postViewService;
 
+    @Transactional(readOnly = true)
     public Page<PostOverviewResponse> getAllPosts(Pageable pageable) {
         Page<Post> postPage = postRepository.findAll(pageable);
         List<Long> postIds = postPage.getContent().stream()
@@ -61,6 +62,7 @@ public class PostService {
 
     }
 
+    @Transactional(readOnly = true)
     public PostDetailResponse getPost(Long postId) {
         Post post = getPostById(postId);
         PostView postView = postViewService.getPostViewById(postId);
@@ -79,7 +81,6 @@ public class PostService {
             commentResponses.add(respone);
         }
 
-        postViewService.updateViewsCount(postId);
         return PostDetailResponse.of(post, postView, postImagesResponses, commentResponses);
     }
 
@@ -119,6 +120,7 @@ public class PostService {
 
     }
 
+    @Transactional
     public void deletePost(Long postId, User user) {
         validateUser(postId, user);
 
