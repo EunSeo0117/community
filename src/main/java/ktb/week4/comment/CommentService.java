@@ -20,8 +20,6 @@ import static ktb.week4.comment.CommentDto.*;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final UserService userService;
-    private final PostViewService postViewService;
     private final PostRepository postRepository;
 
     @Transactional
@@ -36,8 +34,6 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
-
-        postViewService.updateCommentCount(postId, false);
     }
 
     @Transactional
@@ -48,13 +44,12 @@ public class CommentService {
         comment.updateContent(request.content());
     }
 
+    @Transactional
     public void deleteComment(Long commentId, User user) {
         validateUser(commentId, user);
 
         Comment comment = getCommentById(commentId);
         commentRepository.delete(comment);
-
-        postViewService.updateCommentCount(comment.getPost().getId(), true);
 
     }
 
