@@ -1,7 +1,5 @@
 package ktb.week4.comment;
 
-import ktb.week4.config.CurrentUser;
-import ktb.week4.config.CustomUserDetails;
 import ktb.week4.post.postView.PostViewService;
 import ktb.week4.user.User;
 import ktb.week4.user.UserService;

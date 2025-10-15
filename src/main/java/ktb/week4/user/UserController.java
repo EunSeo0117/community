@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import ktb.week4.config.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,12 @@ public class UserController {
         User user = userService.getUserById(userId);
         UserResponse response = userService.getUsers(user);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("getuser")
+    public ResponseEntity<String> getUser(@CurrentUser User currentUser) {
+        String email = currentUser.getEmail();
+        return ResponseEntity.ok(email);
     }
 
     @PatchMapping("/{userId}/profile-image")
