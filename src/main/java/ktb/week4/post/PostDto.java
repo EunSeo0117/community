@@ -24,15 +24,17 @@ public class PostDto {
     ) {}
 
     public record PostOverviewResponse(
-        AuthorResponse user,
-        String title,
-        Integer likeCount,
-        Integer commentCount,
-        Integer viewCount,
-        Instant createdAt
+            Long postId,
+            AuthorResponse user,
+            String title,
+            Integer likeCount,
+            Integer commentCount,
+            Integer viewCount,
+            Instant createdAt
     ) {
         public static PostOverviewResponse of(Post post, PostView postView) {
             return new PostOverviewResponse(
+                    post.getId(),
                     AuthorResponse.of(post.getUser()),
                     post.getPostTitle(),
                     postView.getLikeCount(),
@@ -44,6 +46,7 @@ public class PostDto {
     }
 
     public record PostDetailResponse(
+            Long postId,
             String title,
             String content,
             List<PostImageResponse> postImages,
@@ -55,6 +58,7 @@ public class PostDto {
     ) {
         public static PostDetailResponse of(Post post, PostView postView, List<PostImageResponse> postImagesResponses, List<CommentResponse> commentResponses) {
             return new PostDetailResponse(
+                    post.getId(),
                     post.getPostTitle(),
                     post.getPostContent(),
                     postImagesResponses,
@@ -80,12 +84,14 @@ public class PostDto {
     }
 
     public record CommentResponse(
+            Long commentId,
             AuthorResponse user,
             String commentContent,
             Instant createdAt
     ) {
         public static CommentResponse of(Comment comment) {
             return new CommentResponse(
+                    comment.getId(),
                     AuthorResponse.of(comment.getUser()),
                     comment.getCommentContent(),
                     comment.getCreatedAt()
@@ -94,11 +100,13 @@ public class PostDto {
     }
 
     public record AuthorResponse(
+            Long id,
             String nickName,
             String imageUrl
     ) {
         public static AuthorResponse of(User user) {
             return new AuthorResponse(
+                    user.getId(),
                     user.getNickName(),
                     user.getProfileImg().getFileUrl()
             );
