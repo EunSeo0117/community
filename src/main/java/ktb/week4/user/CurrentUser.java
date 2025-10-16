@@ -1,4 +1,4 @@
-package ktb.week4.config;
+package ktb.week4.user;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

@@ -2,7 +2,7 @@ package ktb.week4.post;
 
 
 import jakarta.validation.Valid;
-import ktb.week4.config.CurrentUser;
+import ktb.week4.user.CurrentUser;
 import ktb.week4.post.postImage.PostImageService;
 import ktb.week4.post.postView.PostViewService;
 import ktb.week4.user.User;
@@ -27,7 +27,6 @@ public class PostController {
     private final UserService userService;
     private final PostViewService postViewService;
 
-    // GET /posts?page=0&size=10&sort=createdAt,desc
     @GetMapping
     public ResponseEntity<Page<PostOverviewResponse>> getAllPosts(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<PostOverviewResponse> responsePage = postService.getAllPosts(pageable);
@@ -42,23 +41,19 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/users/{userId}")
+    @PostMapping
     public ResponseEntity<Long> createPost(@Valid @ModelAttribute PostRequest request,
-                                           @PathVariable Long userId) {
-
-        User user = userService.getUserById(userId);
+                                           @CurrentUser User user) {
 
         Long postId = postService.createPost(request.postTitle(), request.postContent(), user);
         postImageService.createPostImages(postId, request.files());
         return ResponseEntity.ok(postId);
     }
 
-    @PatchMapping("/{postId}/users/{userId}")
+    @PatchMapping("/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable Long postId,
                                         @Valid @ModelAttribute PostRequest request,
-                                        @PathVariable Long userId) {
-
-        User user = userService.getUserById(userId);
+                                        @CurrentUser User user) {
 
         postService.updatePost(postId, request.postTitle(), request.postContent(), user);
         if (request.files() != null &&  !request.files().isEmpty()) {
@@ -68,11 +63,9 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{postId}/users/{userId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId,
-                                        @PathVariable Long userId) {
-
-        User user = userService.getUserById(userId);
+                                        @CurrentUser User user) {
 
         postService.deletePost(postId, user);
         return ResponseEntity.ok().build();

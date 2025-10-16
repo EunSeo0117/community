@@ -1,10 +1,8 @@
 package ktb.week4.user;
 
 import jakarta.validation.Valid;
-import ktb.week4.config.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,11 +15,6 @@ public class UserController {
 
     private final UserService userService;
 
-    /**
-     * @CurrentUser User user 사용예정
-     * 현재 로그인 기능 미구현으로 Pathvariable로 받아옴
-     */
-
     @PostMapping
     public ResponseEntity<Long> signup(@Valid @ModelAttribute SignUpRequest request) {
 
@@ -29,48 +22,37 @@ public class UserController {
         return ResponseEntity.ok(userId);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
+    @GetMapping
+    public ResponseEntity<UserResponse> getUser(@CurrentUser User user) {
         UserResponse response = userService.getUsers(user);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("getuser")
-    public ResponseEntity<String> getUser(@CurrentUser User currentUser) {
-        String email = currentUser.getEmail();
-        return ResponseEntity.ok(email);
-    }
-
-    @PatchMapping("/{userId}/profile-image")
+    @PatchMapping("/profile-image")
     public ResponseEntity<?> updateProfileImage(@RequestParam("file") MultipartFile file,
-                                                @PathVariable Long userId) {
-        User user = userService.getUserById(userId);
+                                                @CurrentUser User user) {
         userService.updateProfileImage(file, user);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{userId}/nickname")
+    @PatchMapping("/nickname")
     public ResponseEntity<?> updateNickname(@Valid @RequestBody nickNameUpdateRequest request,
-                                            @PathVariable Long userId) {
-        User user = userService.getUserById(userId);
+                                            @CurrentUser User user) {
         userService.updateNickname(request, user);
         return ResponseEntity.ok().build();
     }
 
 
-    @PatchMapping("/{userId}/password")
+    @PatchMapping("/password")
     public ResponseEntity<?> updatePassword(@Valid @RequestBody passwordUpdateRequest request,
-                                            @PathVariable Long userId) {
+                                            @CurrentUser User user) {
 
-        User user = userService.getUserById(userId);
         userService.updatePassword(request, user);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(@CurrentUser User user) {
         userService.deleteUser(user);
         return ResponseEntity.ok().build();
     }
