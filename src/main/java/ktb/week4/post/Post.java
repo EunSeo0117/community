@@ -1,7 +1,7 @@
 package ktb.week4.post;
 
 import jakarta.persistence.*;
-import ktb.week4.config.BaseEntity;
+import ktb.week4.util.BaseEntity;
 import ktb.week4.post.postView.PostView;
 import ktb.week4.user.User;
 import lombok.*;

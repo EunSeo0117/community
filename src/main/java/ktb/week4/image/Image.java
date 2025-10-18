@@ -1,7 +1,7 @@
 package ktb.week4.image;
 
 import jakarta.persistence.*;
-import ktb.week4.config.BaseEntity;
+import ktb.week4.util.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

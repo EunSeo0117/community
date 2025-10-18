@@ -1,4 +1,4 @@
-package ktb.week4.config;
+package ktb.week4.util;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
