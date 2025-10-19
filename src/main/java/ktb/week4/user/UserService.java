@@ -3,6 +3,7 @@ package ktb.week4.user;
 import ktb.week4.image.Image;
 import ktb.week4.image.ImageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import static ktb.week4.user.UserDto.*;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -61,6 +63,7 @@ public class UserService {
         validateNickname(request.nickName());
 
         user.updateNickName(request.nickName());
+        userRepository.save(user);
     }
 
     @Transactional
@@ -69,6 +72,8 @@ public class UserService {
 
         String encodedPwd = passwordEncoder.encode(request.password());
         user.updatePassword(encodedPwd);
+        userRepository.save(user);
+        log.info("password updated");
     }
 
     @Transactional

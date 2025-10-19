@@ -65,7 +65,7 @@ public class CommentService {
     private void validateUser(Long commentId, User user) {
         Comment comment = getCommentById(commentId);
 
-        if (!comment.getUser().equals(user)) {
+        if (!comment.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("not allowed to update comment");
         }
     }

@@ -103,7 +103,7 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, String title, String content, User user) {
+    public Long updatePost(Long postId, String title, String content, User user) {
         validateUser(postId, user);
 
         Post post = getPostById(postId);
@@ -118,6 +118,7 @@ public class PostService {
 
         postRepository.save(post);
 
+        return post.getId();
     }
 
     @Transactional
@@ -136,7 +137,7 @@ public class PostService {
     private void validateUser(Long postId, User user) {
         Post post = getPostById(postId);
 
-        if (!post.getUser().equals(user)) {
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("forbidden user");
         }
     }

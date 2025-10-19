@@ -47,6 +47,7 @@ public class PostDto {
 
     public record PostDetailResponse(
             Long postId,
+            AuthorResponse user,
             String title,
             String content,
             List<PostImageResponse> postImages,
@@ -59,6 +60,7 @@ public class PostDto {
         public static PostDetailResponse of(Post post, PostView postView, List<PostImageResponse> postImagesResponses, List<CommentResponse> commentResponses) {
             return new PostDetailResponse(
                     post.getId(),
+                    AuthorResponse.of(post.getUser()),
                     post.getPostTitle(),
                     post.getPostContent(),
                     postImagesResponses,

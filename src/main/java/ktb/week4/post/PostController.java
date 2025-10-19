@@ -45,8 +45,12 @@ public class PostController {
     public ResponseEntity<Long> createPost(@Valid @ModelAttribute PostRequest request,
                                            @CurrentUser User user) {
 
+        // todo 게시물 생성 service 호출 -> 내부에서 post생성, image생성
         Long postId = postService.createPost(request.postTitle(), request.postContent(), user);
-        postImageService.createPostImages(postId, request.files());
+        if (request.files() != null) {
+
+            postImageService.createPostImages(postId, request.files());
+        }
         return ResponseEntity.ok(postId);
     }
 
@@ -55,12 +59,12 @@ public class PostController {
                                         @Valid @ModelAttribute PostRequest request,
                                         @CurrentUser User user) {
 
-        postService.updatePost(postId, request.postTitle(), request.postContent(), user);
+        Long response = postService.updatePost(postId, request.postTitle(), request.postContent(), user);
         if (request.files() != null &&  !request.files().isEmpty()) {
             postImageService.updatePostImages(postId, request.files());
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{postId}")
