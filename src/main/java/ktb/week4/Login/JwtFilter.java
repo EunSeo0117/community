@@ -17,31 +17,32 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final CookieUtil cookieUtil;
 
-    public JwtFilter(JwtUtil jwtUtil, UserRepository userRepository) {
+    public JwtFilter(JwtUtil jwtUtil, UserRepository userRepository, CookieUtil cookieUtil) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.cookieUtil = cookieUtil;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
+        String accessToken = this.cookieUtil.findCookie("accessToken", request.getCookies());
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
+        if (accessToken == null) {
             System.out.println("token null");
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authorization.split(" ")[1];
-        if (jwtUtil.isExpired(token)) {
+
+        if (jwtUtil.isExpired(accessToken)) {
             System.out.println("token expired");
             filterChain.doFilter(request, response);
             return;
         }
 
-        String email = jwtUtil.getEmail(token);
-        String role = jwtUtil.getRole(token);
+        String email = jwtUtil.getEmail(accessToken);
 
         User user = userRepository.findByEmail(email);
         if (user == null) {
