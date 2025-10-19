@@ -34,11 +34,12 @@ public class CommentController {
         commentService.updateComment(commentId, request, user);
     }
 
-    @DeleteMapping("/comments/{commentId}")
-    public void deleteComment(@PathVariable Long commentId,
+    @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    public void deleteComment(@PathVariable Long postId,
+                              @PathVariable Long commentId,
                               @CurrentUser User user) {
 
         commentService.deleteComment(commentId, user);
-        postViewService.updateCommentCount(commentId, true);
+        postViewService.updateCommentCount(postId, true);
     }
 }
