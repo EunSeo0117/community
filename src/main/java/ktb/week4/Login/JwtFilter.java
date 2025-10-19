@@ -5,18 +5,22 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ktb.week4.user.User;
+import ktb.week4.user.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
-    public JwtFilter(JwtUtil jwtUtil) {
+    public JwtFilter(JwtUtil jwtUtil, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -39,11 +43,10 @@ public class JwtFilter extends OncePerRequestFilter {
         String email = jwtUtil.getEmail(token);
         String role = jwtUtil.getRole(token);
 
-        User user = User.builder()
-                .email(email)
-                .password("x")
-                .role(role)
-                .build();
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("존재하지 않는 사용자입니다.");
+        }
 
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
 

@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import ktb.week4.Login.JwtFilter;
 import ktb.week4.Login.JwtUtil;
 import ktb.week4.Login.LoginFilter;
+import ktb.week4.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,16 +23,13 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.util.Collections;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
-
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil) {
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.jwtUtil = jwtUtil;
-    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -69,11 +68,11 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/signup", "/users/**").permitAll()
+                        .requestMatchers("/login", "/", "/signup", "/users/**", "/files/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
 
-                .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil, userRepository), LoginFilter.class)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class)
 
                 .sessionManagement((session)-> session

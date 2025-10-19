@@ -39,13 +39,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
         String email = customUserDetails.getUsername();
-
+        Long userId = customUserDetails.getUser().getId();
         Collection<? extends GrantedAuthority> authorities = customUserDetails.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
-        String token = jwtUtil.createJwt(email, role, 60*60*10L);
+        String token = jwtUtil.createJwt(userId, email, role, 60*60*10000L);
 
         response.addHeader("Authorization", "Bearer " + token);
     }
