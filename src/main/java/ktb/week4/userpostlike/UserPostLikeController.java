@@ -15,17 +15,17 @@ public class UserPostLikeController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> createUserPostLike(@PathVariable Long postId,
+    public ResponseEntity<?> addLike(@PathVariable Long postId,
                                                 @CurrentUser User user) {
 
-        userPostLikeService.createUserPostLike(postId, user);
+        userPostLikeService.addLike(postId, user);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteUserPostLike(@PathVariable Long postId,
+    public ResponseEntity<?> removeLike(@PathVariable Long postId,
                                                 @CurrentUser User user) {
-        userPostLikeService.deleteUserPostLike(postId, user);
+        userPostLikeService.removeLike(postId, user);
         return ResponseEntity.ok().build();
     }
 

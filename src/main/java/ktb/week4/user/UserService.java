@@ -4,8 +4,6 @@ import ktb.week4.image.Image;
 import ktb.week4.image.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,20 +22,11 @@ public class UserService {
 
     @Transactional
     public Long signUp(SignUpRequest request) {
-
         validateEmail(request.email());
         validatePassword(request.password(), request.confirmPassword());
 
         Image image = imageService.uploadImage(request.profileImage());
-
-        User user = User.builder()
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
-                .nickName(request.nickName())
-                .profileImg(image)
-                .role("USER")
-                .build();
-        userRepository.save(user);
+        User user = createUser(request, image);
 
         return user.getId();
     }
@@ -64,15 +53,17 @@ public class UserService {
 
         user.updateNickName(request.nickName());
         userRepository.save(user);
+
+        log.info("nickname updated");
     }
 
     @Transactional
     public void updatePassword(passwordUpdateRequest request, User user) {
         validatePassword(request.password(), request.confirmPassword());
 
-        String encodedPwd = passwordEncoder.encode(request.password());
-        user.updatePassword(encodedPwd);
+        user.updatePassword(passwordEncoder.encode(request.password()));
         userRepository.save(user);
+
         log.info("password updated");
     }
 
@@ -100,9 +91,16 @@ public class UserService {
         }
     }
 
-    public User getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(()-> new IllegalArgumentException("User not found"));
+    private User createUser(SignUpRequest request, Image image) {
+        User user = User.builder()
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .nickName(request.nickName())
+                .profileImg(image)
+                .role("USER")
+                .build();
+        userRepository.save(user);
+        return user;
     }
 
 
