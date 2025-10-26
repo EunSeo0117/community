@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/signup", "/users/**", "/files/**").permitAll()
+                        .requestMatchers("/login", "/", "/signup", "/users/**", "/files/**", "/legal/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
 
