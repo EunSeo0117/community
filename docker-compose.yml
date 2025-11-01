@@ -12,3 +12,12 @@ services:
       - "./mysql-data:/var/lib/mysql"
     ports:
       - "3306:3306"
+
+  redis:
+    image: redis
+    container_name: redis:7.2-alfine
+    restart: always
+    volumes:
+      - "./redis-data:/data"
+    ports:
+      - "6379:6379"
